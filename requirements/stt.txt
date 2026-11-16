@@ -1,0 +1,20 @@
+# ============================================================================
+# Environment: env-stt (Python 3.11 via uv)
+# Purpose: Speech-to-Text (Whisper large-v3 / turbo) + VAD + Reference Slicing
+# Verified against PyPI on 2026-11-10
+# ============================================================================
+
+faster-whisper==1.2.1
+ctranslate2>=4.0.0,<5.0.0
+jiwer==4.0.0
+whisper-normalizer==1.0.0
+silero-vad==6.2.3
+datasets>=3.0.0,<5.0.0
+pyarrow>=15.0.0
+soundfile>=0.12.1
+librosa>=0.11.0
+soxr>=0.3.7
+numpy>=1.26.0,<2.2.0
+pyyaml>=6.0
+tqdm>=4.65.0
+huggingface-hub>=0.25.0

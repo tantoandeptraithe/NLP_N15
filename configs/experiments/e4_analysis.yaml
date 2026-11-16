@@ -1,0 +1,23 @@
+# ============================================================================
+# Experiment E4: Error Analysis & Why Accent Is Lost or Distorted
+# Goal: Test 4 mechanistic hypotheses explaining accent attenuation across EN->VI
+# ============================================================================
+
+experiment_id: "e4_analysis"
+description: "Stratified failure analysis & hypothesis testing on E2/E3 outputs"
+
+hypotheses:
+  H1_phonemizer_quantization:
+    description: "Vietnamese G2P (sea-g2p / BPE) snaps segmental pronunciations to canonical VI phonemes"
+    comparison: "vieneu_v3turbo_clone vs vixtts_clone accentedness & phoneme error patterns"
+  H2_denoise_and_trimming:
+    description: "Reference denoising and <=8s truncation strip micro-prosodic cues"
+    comparison: "clean_denoise_off vs clean_denoise_on across 3s/5s/8s"
+  H3_lexical_tone_f0_constraint:
+    description: "Vietnamese 6 lexical tones constrain F0 contour, suppressing English intonational pitch transfer while preserving rhythm/speaking rate"
+    comparison: "Spearman r(source, output) for speaking_rate vs F0_IQR"
+  H4_timbre_accent_decoupling:
+    description: "Speaker encoders capture vocal tract timbre while losing L1 phonetic rhythm"
+    comparison: "Correlation between SIM-ECAPA, SIM-WavLM, and human Accentedness MOS"
+
+worst_k_inspection: 30

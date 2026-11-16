@@ -1,0 +1,34 @@
+# ============================================================================
+# VCTK Dataset Configuration (Main US vs UK Accent Controlled Set)
+# Official Corpus: CSTR VCTK (CC BY 4.0)
+# HF Parquet Mirror (no deprecated loading script): sanchit-gandhi/vctk
+# ============================================================================
+
+dataset_name: "vctk"
+hf_repo_id: "sanchit-gandhi/vctk"
+hf_split: "train"
+license: "CC-BY-4.0"
+sample_rate: 48000
+preferred_mic: "mic1"
+
+selection:
+  target_accents:
+    - "American"
+    - "English"
+  speakers_per_accent: 12        # 12 US + 12 UK = 24 speakers (balanced F/M where available)
+  utterances_per_speaker: 5      # 24 * 5 = 120 main evaluation utterances
+  min_source_words: 8            # Avoid very short sentences (<10 words in VI hurts viXTTS)
+  min_source_duration_sec: 2.5
+  max_source_duration_sec: 12.0
+  seed: 42
+
+reference_slicing:
+  self_reference_mode: true      # Use the input source audio itself (and its 3s/5s/8s/10s slices) as the TTS reference clip
+  durations_sec: [3.0, 5.0, 8.0, 10.0] # Full 10s input + 3s/5s/8s slices (note: VieNeu internally caps at <=8s)
+  allow_concat_for_long_ref: true
+  silence_gap_sec: 0.15
+  exclude_eval_text_ids: false   # Self-reference: source audio IS the primary reference; held-out utterance kept for evaluation only
+  noise_augmentation:
+    enabled: true
+    snr_db: 10.0
+    noise_type: "pink_cafe_sim"  # Deterministic synthetic cafe/babble-like noise or external WAV

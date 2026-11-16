@@ -1,0 +1,35 @@
+# ============================================================================
+# MT Candidate C: Qwen3.5-9B (Open-weight Multilingual LLM, 9.65B params)
+# Model ID: Qwen/Qwen3.5-9B (Apache-2.0)
+# IMPORTANT: Qwen3.5 enables thinking (<think>...</think>) by default!
+#   Must set chat_template_kwargs: {enable_thinking: false} and strip any
+#   residual <think> blocks in post-processing.
+# ============================================================================
+
+stage: "mt"
+model_name: "qwen35_9b"
+backend: "llm_chat"
+model_id: "Qwen/Qwen3.5-9B"
+fallback_model_id: "Qwen/Qwen2.5-7B-Instruct"
+license: "Apache-2.0"
+
+device: "cuda"
+torch_dtype: "bfloat16"          # ~20 GB VRAM in bf16 on A100; set load_in_4bit=true on T4
+load_in_4bit: false
+batch_size: 8
+
+chat_template_kwargs:
+  enable_thinking: false
+
+prompt:
+  system: >-
+    Bạn là chuyên gia biên dịch kịch bản lồng tiếng Anh - Việt.
+    Hãy dịch câu tiếng Anh sau sang tiếng Việt tự nhiên, dễ đọc thành tiếng (spoken Vietnamese),
+    giữ nguyên tên riêng (người, địa danh, tổ chức) và con số.
+    CHỈ trả về đúng câu dịch tiếng Việt, tuyệt đối không giải thích hay thêm ghi chú.
+  user_template: "Translate into Vietnamese:\n{source_text}"
+
+generation:
+  do_sample: false               # Greedy decoding for deterministic, reproducible research
+  max_new_tokens: 256
+  repetition_penalty: 1.05

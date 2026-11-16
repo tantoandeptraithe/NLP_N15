@@ -1,0 +1,28 @@
+# ============================================================================
+# Primary TTS Configuration: VieNeu-TTS v3 Turbo (48 kHz)
+# Repo: github.com/pnnbao97/VieNeu-TTS | HF: pnnbao-ump/VieNeu-TTS-v3-Turbo
+# SDK: vieneu==3.8.3 (Apache-2.0)
+# Notes verified from official README:
+#   - Trained from scratch on ~10,000h English-Vietnamese bilingual speech
+#   - Auto-trims reference audio to <= 8 seconds
+#   - Supports `denoise=True/False` on reference clip
+#   - Built-in preset voices (e.g., "Hải Đăng", "Mai Anh") serve as Native VI Anchors
+# ============================================================================
+
+stage: "tts"
+model_name: "vieneu_v3turbo"
+backend: "vieneu"
+model_id: "pnnbao-ump/VieNeu-TTS-v3-Turbo"
+sdk_mode: "v3turbo"
+license: "Apache-2.0"
+
+sample_rate: 48000
+max_ref_duration_sec: 8.0
+default_denoise: true
+seed: 42
+
+anchors:
+  native_vi_male_north: "Hải Đăng"
+  native_vi_female_north: "Mai Anh"
+  native_vi_male_south: "Minh Triết"
+  native_vi_female_south: "Thùy Dung"

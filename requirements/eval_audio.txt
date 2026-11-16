@@ -1,0 +1,30 @@
+# ============================================================================
+# Environment: env-eval-audio (Python 3.11 via uv)
+# Purpose: Audio Evaluation:
+#   - Speaker Similarity: speechbrain/spkrec-ecapa-voxceleb & microsoft/wavlm-base-plus-sv
+#   - Naturalness MOS: UTMOSv2 (sarulab-speech/UTMOSv2) & SpeechMOS (utmos22_strong)
+#   - Intelligibility CER/WER: vinai/PhoWhisper-large
+#   - Prosody & F0 contour: praat-parselmouth
+#   - Accent Probe: Jzuluaga/accent-id-commonaccent_ecapa
+# Verified on 2026-11-10
+# ============================================================================
+
+torch==2.8.0
+torchaudio==2.8.0
+speechbrain==1.1.2
+transformers==4.57.6
+jiwer==4.0.0
+praat-parselmouth==0.4.7
+pyloudnorm==0.2.0
+silero-vad==6.2.3
+soundfile>=0.12.1
+librosa>=0.11.0
+scipy>=1.13.0
+numpy>=1.26.0,<2.0.0
+pandas>=2.1.0,<3.0.0
+pyarrow>=15.0.0
+matplotlib>=3.8.4
+gradio>=5.49.1
+pyyaml>=6.0
+tqdm>=4.65.0
+git+https://github.com/sarulab-speech/UTMOSv2.git

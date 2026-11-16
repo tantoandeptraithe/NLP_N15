@@ -1,0 +1,28 @@
+# ============================================================================
+# Experiment E3: Reference Length & Noise/Denoising Ablation
+# Goal: Address RQ3 — How do reference length (3s/5s/8s) and reference quality
+#       (clean vs. noisy SNR=10dB vs. denoised) impact speaker similarity,
+#       naturalness, and accent retention?
+# ============================================================================
+
+experiment_id: "e3_reference"
+description: "3x4 factorial ablation over reference length and noise/denoising conditions"
+
+dataset_config: "configs/data/vctk.yaml"
+
+factors:
+  ref_durations_sec: [3.0, 5.0, 8.0]
+  vixtts_extra_durations_sec: [10.0]   # Optional extra point on viXTTS (>8s not used by VieNeu)
+  quality_conditions:
+    - name: "clean_denoise_on"
+      input_type: "clean"
+      vieneu_denoise: true
+    - name: "clean_denoise_off"
+      input_type: "clean"
+      vieneu_denoise: false
+    - name: "noisy10db_denoise_on"
+      input_type: "noisy_snr10db"
+      vieneu_denoise: true
+    - name: "noisy10db_denoise_off"
+      input_type: "noisy_snr10db"
+      vieneu_denoise: false

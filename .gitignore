@@ -1,0 +1,41 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+.uv-envs/
+env-*/
+*.egg-info/
+dist/
+build/
+
+# Data, audio, checkpoints, and outputs (stored on Google Drive)
+data/
+raw/
+processed/
+refs/
+outputs/
+metrics/
+runs/
+checkpoints/
+models/
+*.wav
+*.flac
+*.mp3
+*.pth
+*.pt
+*.onnx
+*.safetensors
+*.parquet
+
+# Keep small sample manifests or test fixtures if tracked explicitly
+!tests/fixtures/**
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Secrets / tokens
+.env
+*.key

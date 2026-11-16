@@ -1,0 +1,19 @@
+# ============================================================================
+# GLOBE_V2 Dataset Configuration (Secondary Multi-Accent Robustness Set)
+# HF Repo: MushanW/GLOBE_V2 (CC0-1.0, 44.1kHz supersampled from Common Voice)
+# ============================================================================
+
+dataset_name: "globe_v2"
+hf_repo_id: "MushanW/GLOBE_V2"
+hf_split: "test"
+license: "CC0-1.0"
+sample_rate: 44100
+
+selection:
+  target_accents:
+    - "United States English"
+    - "England English"
+  speakers_per_accent: 6
+  utterances_per_speaker: 3
+  min_source_words: 8
+  seed: 42

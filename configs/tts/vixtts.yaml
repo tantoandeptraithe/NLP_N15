@@ -1,0 +1,33 @@
+# ============================================================================
+# Baseline TTS Configuration: viXTTS (Fine-tuned XTTS-v2.0.3 on viVoice)
+# HF Repo: capleaf/viXTTS (Coqui Public Model License - Non-Commercial)
+# Speaker file: speakers_xtts.pth from coqui/XTTS-v2
+# Notes verified from capleaf/viXTTS & thinhlpg/vixtts-demo:
+#   - Output sample rate: 24,000 Hz
+#   - Sentences < 10 Vietnamese words suffer trailing artifacts -> apply
+#     calculate_keep_len() heuristic and/or short-sentence padding
+#   - Note on coqui-tts 0.28.0: VoiceBpeTokenizer.preprocess_text() does not
+#     list "vi" in its whitelist; our wrapper patches preprocess_text("vi")
+#     to use basic_cleaners just like thinhlpg/TTS branch `add-vietnamese-xtts`.
+# ============================================================================
+
+stage: "tts"
+model_name: "vixtts"
+backend: "vixtts"
+model_id: "capleaf/viXTTS"
+base_speaker_repo_id: "coqui/XTTS-v2"
+license: "CPML (Non-Commercial)"
+
+sample_rate: 24000
+language: "vi"
+normalize_vietnamese_text: true
+apply_short_sentence_keep_len: true
+seed: 42
+
+inference:
+  temperature: 0.3
+  length_penalty: 1.0
+  repetition_penalty: 10.0
+  top_k: 30
+  top_p: 0.85
+  enable_text_splitting: true

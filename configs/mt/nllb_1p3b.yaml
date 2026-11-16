@@ -1,0 +1,25 @@
+# ============================================================================
+# MT Candidate B: Meta NLLB-200 Distilled 1.3B (Multilingual Seq2Seq M2M100)
+# Model ID: facebook/nllb-200-distilled-1.3B (CC-BY-NC-4.0, Non-Commercial)
+# Optional larger variant: facebook/nllb-200-3.3B
+# Smoke-test lightweight variant: facebook/nllb-200-distilled-600M
+# ============================================================================
+
+stage: "mt"
+model_name: "nllb_200_distilled_1p3b"
+backend: "seq2seq_nllb"
+model_id: "facebook/nllb-200-distilled-1.3B"
+alt_model_id_3p3b: "facebook/nllb-200-3.3B"
+smoke_model_id_600m: "facebook/nllb-200-distilled-600M"
+license: "CC-BY-NC-4.0"
+
+src_lang: "eng_Latn"
+tgt_lang: "vie_Latn"
+device: "cuda"
+torch_dtype: "float16"
+batch_size: 16
+
+generation:
+  num_beams: 5
+  max_new_tokens: 256
+  early_stopping: true

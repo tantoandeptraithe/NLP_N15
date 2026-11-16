@@ -1,0 +1,19 @@
+# ============================================================================
+# FLEURS + FLORES+ Parallel Dataset Configuration (MT Benchmark Set A & STT)
+# Audio & EN Transcript: google/fleurs (en_us, CC-BY-4.0)
+# Parallel VI Reference: openlanguagedata/flores_plus (vie_Latn, CC-BY-SA-4.0, gated=auto)
+# ============================================================================
+
+dataset_name: "fleurs_en_vi"
+fleurs_repo_id: "google/fleurs"
+fleurs_config: "en_us"
+fleurs_parquet_path: "parquet-data/en_us/test-00000-of-00001.parquet"
+flores_repo_id: "openlanguagedata/flores_plus"
+flores_en_file: "devtest/eng_Latn.jsonl"
+flores_vi_file: "devtest/vie_Latn.jsonl"
+license: "CC-BY-4.0 (FLEURS) / CC-BY-SA-4.0 (FLORES+)"
+sample_rate: 16000
+
+selection:
+  num_mt_benchmark_sentences: 60  # Subset A of the 100-sentence MT benchmark
+  seed: 42

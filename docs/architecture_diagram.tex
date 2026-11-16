@@ -1,0 +1,201 @@
+\documentclass[tikz,border=14pt]{standalone}
+\usepackage[utf8]{inputenc}
+\usepackage[vietnamese]{babel}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc, fit}
+
+\begin{document}
+
+\begin{tikzpicture}[
+    font=\sffamily\footnotesize,
+    node distance=0.9cm and 1.25cm,
+    % Khối chuẩn đơn sắc Đen - Trắng (Viền đen, nền trắng, chữ đen)
+    stagebox/.style={
+        rectangle,
+        draw=black,
+        fill=white,
+        line width=0.9pt,
+        text=black,
+        minimum width=4.4cm,
+        minimum height=1.55cm,
+        inner sep=6pt,
+        align=left
+    },
+    evalbox/.style={
+        rectangle,
+        draw=black,
+        fill=white,
+        dashed,
+        line width=0.9pt,
+        text=black,
+        minimum width=4.3cm,
+        minimum height=1.25cm,
+        inner sep=5pt,
+        align=left
+    },
+    % Đường nối vuông góc đen trắng thuần túy
+    ortho/.style={
+        -{Stealth[length=2.2mm, width=1.6mm, fill=black, draw=black]},
+        draw=black,
+        line width=0.85pt
+    },
+    orthodash/.style={
+        -{Stealth[length=2.2mm, width=1.6mm, fill=black, draw=black]},
+        draw=black,
+        dashed,
+        line width=0.85pt
+    }
+]
+
+    % =========================================================================
+    % CỘT 1: DỮ LIỆU ĐẦU VÀO
+    % =========================================================================
+    \node[stagebox] (audio_in) {
+        \textbf{1. Audio EN Đầu vào}\\[2pt]
+        \scriptsize $\bullet$ Nguồn: VCTK / FLEURS / Tự thu\\
+        \scriptsize $\bullet$ Quy mô: 10--20 người nói (đa accent)\\
+        \scriptsize $\bullet$ Định dạng: \texttt{.wav} (16--48 kHz, 3--10s)
+    };
+
+    % =========================================================================
+    % CỘT 2: TIỀN XỬ LÝ & CẮT MẪU THAM CHIẾU
+    % =========================================================================
+    \node[stagebox, right=1.1cm of audio_in] (prepare) {
+        \textbf{2. Prepare \& Cắt Reference}\\[2pt]
+        \scriptsize $\bullet$ Tạo \texttt{manifest.jsonl} (\texttt{utterance\_id})\\
+        \scriptsize $\bullet$ Lọc khoảng lặng bằng \texttt{Silero-VAD}\\
+        \scriptsize $\bullet$ Cắt mốc tham chiếu: \textbf{3s / 5s / 8--10s}\\
+        \scriptsize $\bullet$ Chuẩn hóa âm lượng ($-20\text{ dBFS}$)
+    };
+
+    % =========================================================================
+    % CỘT 3: NHÁNH TRÊN (STT) & NHÁNH DƯỚI (REFERENCE CLIPS)
+    % =========================================================================
+    \node[stagebox, above right=0.55cm and 1.25cm of prepare] (stt) {
+        \textbf{3. STT: faster-whisper large-v3}\\[2pt]
+        \scriptsize $\bullet$ Môi trường: \texttt{env-stt} (CTranslate2 FP16)\\
+        \scriptsize $\bullet$ Cấu hình: \texttt{language="en", beam=5}\\
+        \scriptsize $\bullet$ Đầu ra: \texttt{stt\_en} + Word Timestamps
+    };
+
+    \node[stagebox, below right=0.85cm and 2.5cm of prepare] (ref_clips) {
+        \textbf{Reference Clips (Audio Tham chiếu)}\\[2pt]
+        \scriptsize $\bullet$ Biến thể chất lượng: \textbf{raw / noisy / denoised}\\
+        \scriptsize $\bullet$ Biến thể độ dài: \textbf{3s / 5s / 10s} (\texttt{ref\_audio})\\
+        \scriptsize $\bullet$ \textit{Chỉ dùng ở bước suy luận (Zero-shot)}\\
+        \scriptsize $\bullet$ \textit{Tuyệt đối không huấn luyện lại TTS}
+    };
+
+    % =========================================================================
+    % CỘT 4: ĐÁNH GIÁ STT (WER) & DỊCH MÁY (MT)
+    % =========================================================================
+    \node[evalbox, above right=0.35cm and 1.25cm of stt] (eval_stt) {
+        \textbf{Đánh giá STT (WER / CER)}\\[2pt]
+        \scriptsize $\bullet$ Công cụ: \texttt{jiwer} (chuẩn hóa chữ thường)\\
+        \scriptsize $\bullet$ Phân tích WER theo từng nhóm Accent
+    };
+
+    \node[stagebox, below right=0.15cm and 1.25cm of stt] (mt) {
+        \textbf{4. MT: Dịch máy (EN $\rightarrow$ VI)}\\[2pt]
+        \scriptsize $\bullet$ Môi trường: \texttt{env-mt} (So sánh 3 ứng viên)\\
+        \scriptsize $\bullet$ \textbf{VinAI v2} $|$ \textbf{NLLB-200 1.3B} $|$ \textbf{Qwen3.5-9B}\\
+        \scriptsize $\bullet$ Hướng cải tiến: \textit{LoRA Dubbing khớp độ dài}\\
+        \scriptsize $\bullet$ Đầu ra: Văn bản Tiếng Việt (\texttt{mt\_vi})
+    };
+
+    % =========================================================================
+    % CỘT 5: ĐÁNH GIÁ MT & HAI NHÁNH TTS (VIENEU vs BASELINE VIXTTS)
+    % =========================================================================
+    \node[evalbox, above right=0.35cm and 1.35cm of mt] (eval_mt) {
+        \textbf{Đánh giá Dịch máy (\texttt{env-eval-mt})}\\[2pt]
+        \scriptsize $\bullet$ \texttt{wmt22-comet-da} (Ngữ nghĩa)\\
+        \scriptsize $\bullet$ \texttt{sacreBLEU} \& \texttt{chrF++} + Tỷ lệ âm tiết
+    };
+
+    \node[stagebox, right=1.35cm of mt] (tts_vieneu) {
+        \textbf{5a. TTS Chính: VieNeu-TTS v3 Turbo}\\[2pt]
+        \scriptsize $\bullet$ Môi trường: \texttt{env-vieneu} (Zero-shot Cloning)\\
+        \scriptsize $\bullet$ Đầu vào: \texttt{mt\_vi} + \texttt{ref\_audio} (Inference)\\
+        \scriptsize $\bullet$ Đầu ra: \texttt{syn\_vieneu.wav} (48 kHz)
+    };
+
+    \node[stagebox, below=0.45cm of tts_vieneu] (tts_baseline) {
+        \textbf{5b. TTS Baseline: viXTTS (Đối chứng)}\\[2pt]
+        \scriptsize $\bullet$ Môi trường: \texttt{env-vixtts} (Đối chứng RQ2)\\
+        \scriptsize $\bullet$ Đầu vào: \texttt{mt\_vi} + \texttt{ref\_audio} (24 kHz)\\
+        \scriptsize $\bullet$ Đầu ra: \texttt{syn\_baseline.wav}
+    };
+
+    % =========================================================================
+    % CỘT 6: ĐÁNH GIÁ AUDIO TỰ ĐỘNG
+    % =========================================================================
+    \node[evalbox, minimum width=5.0cm, minimum height=1.75cm, right=1.35cm of $(tts_vieneu.east)!0.5!(tts_baseline.east)$] (eval_audio) {
+        \textbf{6. Eval Audio Tự động (\texttt{env-eval-audio})}\\[2pt]
+        \scriptsize $\bullet$ \textbf{SIM:} Cosine Similarity (\texttt{WavLM-SV} \& \texttt{ECAPA})\\
+        \scriptsize $\bullet$ \textbf{Naturalness:} \texttt{UTMOS} (Điểm tự nhiên tự động)\\
+        \scriptsize $\bullet$ \textbf{Prosody:} Tương quan đường nét $F_0$ \& Tốc độ nói\\
+        \scriptsize $\bullet$ \textbf{Back-STT:} Whisper đọc lại tiếng Việt tính CER
+    };
+
+    % =========================================================================
+    % CỘT 7: NGHE THỬ (GRADIO) & CỘT 8: PHÂN TÍCH LỖI
+    % =========================================================================
+    \node[stagebox, minimum width=3.9cm, above right=-0.1cm and 1.2cm of eval_audio] (listening) {
+        \textbf{7. Listening Test (Gradio)}\\[2pt]
+        \scriptsize $\bullet$ Nghe mù chấm thang \textbf{1--5}\\
+        \scriptsize $\bullet$ Độ tự nhiên (MOS)\\
+        \scriptsize $\bullet$ Độ giống giọng (SMOS)\\
+        \scriptsize $\bullet$ Mức độ giữ Accent gốc
+    };
+
+    \node[stagebox, minimum width=4.2cm, below right=-0.2cm and 1.2cm of listening] (analysis) {
+        \textbf{8. Phân tích \& Error Analysis}\\[2pt]
+        \scriptsize $\bullet$ Trả lời định lượng \textbf{RQ1, RQ2, RQ3}\\
+        \scriptsize $\bullet$ Kiểm định Bootstrap 95\% CI\\
+        \scriptsize $\bullet$ Giải thích nguyên nhân mất Accent\\
+        \scriptsize $\bullet$ Lưu kết quả vào Google Drive
+    };
+
+    % =========================================================================
+    % CÁC ĐƯỜNG NỐI VUÔNG GÓC ĐEN TRẮNG (ORTHOGONAL CONNECTORS)
+    % =========================================================================
+    \draw[ortho] (audio_in.east) -- (prepare.west);
+
+    \coordinate (split_prep) at ($(prepare.east)+(0.5cm,0)$);
+    \draw[draw=black, line width=0.85pt] (prepare.east) -- (split_prep);
+    \draw[ortho] (split_prep) |- (stt.west);
+    \draw[ortho] (split_prep) |- (ref_clips.west);
+
+    \coordinate (split_stt) at ($(stt.east)+(0.5cm,0)$);
+    \draw[draw=black, line width=0.85pt] (stt.east) -- (split_stt);
+    \draw[orthodash] (split_stt) |- (eval_stt.west);
+    \draw[ortho] (split_stt) |- (mt.west);
+
+    \coordinate (split_mt) at ($(mt.east)+(0.55cm,0)$);
+    \draw[draw=black, line width=0.85pt] (mt.east) -- (split_mt);
+    \draw[orthodash] (split_mt) |- (eval_mt.west);
+    \draw[ortho] (split_mt) |- ([yshift=2mm]tts_vieneu.west);
+    \draw[ortho] (split_mt) |- ([yshift=2mm]tts_baseline.west);
+
+    \coordinate (split_ref) at ($(mt.east)+(0.85cm,0)$);
+    \draw[draw=black, line width=0.85pt] (ref_clips.east) -| (split_ref |- tts_baseline.west);
+    \draw[ortho] (split_ref |- tts_baseline.west) |- ([yshift=-2mm]tts_vieneu.west);
+    \draw[ortho] (ref_clips.east) -| (split_ref |- tts_baseline.west) -- ([yshift=-2mm]tts_baseline.west);
+
+    \coordinate (join_tts) at ($(eval_audio.west)-(0.55cm,0)$);
+    \draw[draw=black, line width=0.85pt] (tts_vieneu.east) -| (join_tts);
+    \draw[draw=black, line width=0.85pt] (tts_baseline.east) -| (join_tts);
+    \draw[ortho] (join_tts) -- (eval_audio.west);
+
+    \coordinate (split_eval_aud) at ($(eval_audio.east)+(0.5cm,0)$);
+    \draw[draw=black, line width=0.85pt] (eval_audio.east) -- (split_eval_aud);
+    \draw[ortho] (split_eval_aud) |- (listening.west);
+    \draw[ortho] (split_eval_aud) |- ([yshift=-2mm]analysis.west);
+
+    \coordinate (split_listen) at ($(listening.east)+(0.5cm,0)$);
+    \draw[draw=black, line width=0.85pt] (listening.east) -- (split_listen);
+    \draw[ortho] (split_listen) |- ([yshift=2mm]analysis.west);
+
+\end{tikzpicture}
+
+\end{document}

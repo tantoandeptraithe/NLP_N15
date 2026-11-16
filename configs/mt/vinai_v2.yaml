@@ -1,0 +1,23 @@
+# ============================================================================
+# MT Candidate A: VinAI Translate EN->VI v2 (Specialized Seq2Seq mBART)
+# Model ID: vinai/vinai-translate-en2vi-v2 (448M params, GNU AGPL-3.0)
+# Verified API from VinAIResearch/VinAI_Translate README
+# ============================================================================
+
+stage: "mt"
+model_name: "vinai_en2vi_v2"
+backend: "seq2seq_vinai"
+model_id: "vinai/vinai-translate-en2vi-v2"
+license: "AGPL-3.0"
+
+src_lang: "en_XX"
+tgt_lang: "vi_VN"
+device: "cuda"
+torch_dtype: "float16"
+batch_size: 16
+
+generation:
+  num_beams: 5
+  max_new_tokens: 256
+  early_stopping: true
+  no_repeat_ngram_size: 3

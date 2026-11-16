@@ -1,0 +1,42 @@
+# ============================================================================
+# Experiment E2: Zero-Shot TTS Comparison (VieNeu-TTS v3 Turbo vs. viXTTS)
+# Goal: Address RQ1 (Timbre Preservation) & RQ2 (Accent/Prosody Preservation)
+#       under fixed MT text and clean 8-second English references (US vs. UK).
+# ============================================================================
+
+experiment_id: "e2_tts"
+description: "Main TTS comparison on 24 VCTK speakers (12 US, 12 UK) x 5 utterances = 120 items"
+
+dataset_config: "configs/data/vctk.yaml"
+ref_duration_sec: 8.0
+ref_condition: "clean"
+
+systems:
+  - name: "vieneu_v3turbo_clone"
+    config: "configs/tts/vieneu_v3turbo.yaml"
+    mode: "clone"
+    denoise: true
+  - name: "vixtts_clone"
+    config: "configs/tts/vixtts.yaml"
+    mode: "clone"
+  - name: "vieneu_preset_anchor"
+    config: "configs/tts/vieneu_v3turbo.yaml"
+    mode: "preset_gender_matched" # Controls for 0% foreign accent & cross-speaker SIM floor
+  - name: "vieneu_same_lang_en_control"
+    config: "configs/tts/vieneu_v3turbo.yaml"
+    mode: "clone_same_lang_en"    # Quantifies language-mismatch penalty in ECAPA/WavLM
+
+evaluation:
+  speaker_encoders:
+    - "speechbrain/spkrec-ecapa-voxceleb"
+    - "microsoft/wavlm-base-plus-sv"
+  mos_predictors:
+    - "utmosv2"
+  intelligibility_asr: "vinai/PhoWhisper-large"
+  accent_probe: "Jzuluaga/accent-id-commonaccent_ecapa"
+  prosody_features:
+    - "speaking_rate_syllables_per_sec"
+    - "pause_ratio"
+    - "f0_median_hz"
+    - "f0_iqr_semitones"
+    - "f0_slope_st_per_sec"

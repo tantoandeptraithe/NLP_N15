@@ -1,0 +1,38 @@
+# ============================================================================
+# Experiment E1: Machine Translation Benchmark (100 Sentences)
+# Goal: Compare at least 3 MT families on Gold vs. Whisper STT transcripts
+#       and select 1 Primary + 1 Contrastive MT model using pre-registered rules.
+# ============================================================================
+
+experiment_id: "e1_mt"
+description: "Benchmark MT candidates on 60 FLEURS/FLORES+ + 40 in-domain VCTK sentences"
+
+subsets:
+  flores_subset_size: 60
+  indomain_vctk_size: 40
+  proper_noun_tagged_size: 20
+
+input_modes:
+  - "gold_en"                    # Evaluates pure MT quality
+  - "whisper_large_v3_en"        # Evaluates cascade ASR->MT error propagation
+
+candidates:
+  - "configs/mt/vinai_v2.yaml"
+  - "configs/mt/nllb_1p3b.yaml"
+  - "configs/mt/qwen35_9b.yaml"
+
+optional_candidates:
+  - "configs/mt/hunyuan_mt_7b.yaml"
+
+metrics:
+  primary: "comet_wmt22_da"      # Unbabel/wmt22-comet-da
+  secondary:
+    - "sacrebleu"
+    - "chrf2_pp"
+    - "proper_noun_accuracy"
+    - "latency_ms_per_sentence"
+
+selection_rule:
+  max_proper_noun_error_rate: 0.10
+  significance_alpha: 0.05
+  bootstrap_resamples: 1000

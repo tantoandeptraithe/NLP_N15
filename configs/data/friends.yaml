@@ -1,0 +1,13 @@
+# ============================================================================
+# Self-Recorded Friends / Bilingual Speakers Dataset Configuration
+# Purpose:
+#   1. True Cross-Lingual Ceiling: Same speaker recorded in both English & Vietnamese
+#   2. Long natural reference recordings (10s - 30s) without concatenation
+# ============================================================================
+
+dataset_name: "friends"
+license: "Informed-Consent-Research-Only"
+raw_subdir: "raw/friends"
+sample_rate: 48000
+require_signed_consent: true
+ref_durations_sec: [3.0, 5.0, 8.0, 10.0]

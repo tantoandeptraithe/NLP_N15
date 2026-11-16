@@ -1,0 +1,27 @@
+# ============================================================================
+# STT Configuration: faster-whisper large-v3
+# Model ID: Systran/faster-whisper-large-v3 (MIT)
+# Fallback: openai/whisper-large-v3 via Hugging Face Transformers
+# ============================================================================
+
+stage: "stt"
+model_name: "faster_whisper_large_v3"
+model_id: "Systran/faster-whisper-large-v3"
+fallback_hf_model_id: "openai/whisper-large-v3"
+debug_model_id: "openai/whisper-large-v3-turbo"
+license: "MIT"
+
+device: "cuda"
+compute_type: "float16"          # Use "int8_float16" or "int8" if VRAM constrained
+
+decode_options:
+  language: "en"
+  task: "transcribe"
+  beam_size: 5
+  best_of: 5
+  temperature: 0.0
+  word_timestamps: true
+  vad_filter: true
+  vad_parameters:
+    min_silence_duration_ms: 400
+  condition_on_previous_text: false

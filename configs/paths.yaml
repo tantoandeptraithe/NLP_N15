@@ -1,0 +1,19 @@
+# ============================================================================
+# Global Path Configuration (Google Drive persistence + Local Colab SSD cache)
+# Override any root via environment variable S2ST_DRIVE_ROOT or S2ST_CACHE_ROOT
+# ============================================================================
+
+drive_root: "/content/drive/MyDrive/s2st_vi"
+local_cache_root: "/content/cache/s2st"
+hf_home: "/content/cache/huggingface"
+
+subdirs:
+  raw: "raw"
+  manifests: "processed/manifests"
+  refs: "refs"
+  outputs_stt: "outputs/stt"
+  outputs_mt: "outputs/mt"
+  outputs_tts: "outputs/tts"
+  metrics: "metrics"
+  listening: "listening"
+  runs: "runs"

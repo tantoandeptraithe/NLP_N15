@@ -1,0 +1,16 @@
+{
+  "speaker_id": "p225 (Female, British English - Southern England)",
+  "input_en_wav": "e:\\NLP_project\\demo_samples\\input_en_uk_p225_9s.wav",
+  "input_duration_sec": 14.41,
+  "gold_en_text": "Six spoons of fresh snow peas, five thick slabs of blue cheese, and maybe a snack for her brother Bob. She can scoop these things into three red bags, and we will go meet her Wednesday at the train station.",
+  "stt_en_text": "6 spoons of fresh snow peas, 5 thick slabs of blue cheese and maybe a snack for her brother Bob. She can scoot these things into three red bags and we will go meet her Wednesday at the train station.",
+  "mt_vi_text": "6 thìa đậu Hà Lan tươi, 5 miếng phô mai xanh dày và có thể là một bữa ăn nhẹ cho anh trai Bob. Cô ấy có thể dọn những thứ này vào ba túi màu đỏ và chúng tôi sẽ gặp cô ấy vào thứ Tư tại nhà ga.",
+  "output_vi_cloned_wav": "e:\\NLP_project\\demo_samples\\output_vi_cloned_p225.wav",
+  "output_duration_sec": 12.32,
+  "output_vi_preset_anchor_wav": "e:\\NLP_project\\demo_samples\\output_vi_preset_maianh.wav",
+  "timings_sec": {
+    "stt": 7.01,
+    "mt": 15.8,
+    "tts_cloning": 86.85
+  }
+}

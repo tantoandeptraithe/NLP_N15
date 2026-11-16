@@ -1,0 +1,25 @@
+# ============================================================================
+# MT Candidate D (Optional): Tencent Hunyuan-MT-7B (Dedicated Translation LLM)
+# Model ID: tencent/Hunyuan-MT-7B (8.03B params, WMT25 1st place in 30/31 cats)
+# WARNING: Check Tencent Hunyuan Community License terms before non-academic use.
+# Uses the official prompt template from tencent/Hunyuan-MT-7B README.
+# ============================================================================
+
+stage: "mt"
+model_name: "hunyuan_mt_7b"
+backend: "llm_chat"
+model_id: "tencent/Hunyuan-MT-7B"
+license: "Tencent-Hunyuan-Community-License (verify terms)"
+
+device: "cuda"
+torch_dtype: "bfloat16"
+load_in_4bit: false
+batch_size: 8
+
+prompt:
+  system: ""
+  user_template: "Translate the following segment into Vietnamese, without additional explanation.\n\n{source_text}"
+
+generation:
+  do_sample: false
+  max_new_tokens: 256
